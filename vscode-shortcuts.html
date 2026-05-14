@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VS Code Keyboard Shortcuts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #161b27;
+    --surface2: #1d2436;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #6b7591;
+    --accent: #4f9cf9;
+    --accent-dim: rgba(79,156,249,0.12);
+    --accent-glow: rgba(79,156,249,0.25);
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,0.1);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --grid-line: rgba(79,156,249,0.03);
+  }
+
+  :root.light {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface2: #eef0f4;
+    --border: rgba(0,0,0,0.07);
+    --border2: rgba(0,0,0,0.13);
+    --text: #1a1d27;
+    --muted: #8891aa;
+    --accent: #1a6fd4;
+    --accent-dim: rgba(26,111,212,0.09);
+    --accent-glow: rgba(26,111,212,0.2);
+    --green: #1a9e65;
+    --green-dim: rgba(26,158,101,0.1);
+    --grid-line: rgba(26,111,212,0.04);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* Header */
+  header {
+    padding: 48px 0 36px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .header-left {}
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .vscode-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* OS Toggle */
+  .os-toggle {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .os-btn {
+    padding: 8px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .os-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+  .os-btn.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .os-btn:hover:not(.active) { color: var(--text); }
+
+  /* Controls bar */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 360px;
+  }
+
+  .search-box svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  #search::placeholder { color: var(--muted); }
+  #search:focus { border-color: var(--accent); }
+
+  .shortcut-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .shortcut-count strong { color: var(--accent); }
+
+  /* Category pills */
+  .cat-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: var(--mono);
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .pill:hover { color: var(--text); border-color: var(--border2); }
+
+  .pill.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-color: rgba(79,156,249,0.3);
+  }
+
+  /* Sections */
+  .sections { display: flex; flex-direction: column; gap: 28px; }
+
+  .section {}
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .section-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-icon svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+.section-title {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 1000;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Shortcut grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 5px;
+  }
+
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.12s;
+    cursor: default;
+  }
+
+  .shortcut-row:hover {
+    background: var(--surface2);
+    border-color: var(--border);
+  }
+
+.shortcut-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #101010;
+    flex: 1;
+    min-width: 0;
+    font-family: var(--sans);
+}
+
+  .keys {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+kbd {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    background: #e5db5238;
+    border: 1px solid var(--border2);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    color: #040404;
+    white-space: nowrap;
+    letter-spacing: 0;
+}
+
+  .sep {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* Category color theming */
+  .cat-general .section-icon { background: rgba(79,156,249,0.15); color: var(--accent); }
+  .cat-general .section-title { color: var(--accent); }
+
+  .cat-editing .section-icon { background: rgba(62,207,142,0.12); color: var(--green); }
+  .cat-editing .section-title { color: var(--green); }
+
+  .cat-multi .section-icon { background: rgba(243,156,56,0.12); color: #f39c38; }
+  .cat-multi .section-title { color: #f39c38; }
+
+  .cat-nav .section-icon { background: rgba(162,89,255,0.12); color: #a259ff; }
+  .cat-nav .section-title { color: #a259ff; }
+
+  .cat-search .section-icon { background: rgba(255,182,48,0.12); color: #ffb630; }
+  .cat-search .section-title { color: #ffb630; }
+
+  .cat-lang .section-icon { background: rgba(79,156,249,0.15); color: var(--accent); }
+  .cat-lang .section-title { color: var(--accent); }
+
+  .cat-file .section-icon { background: rgba(62,207,142,0.12); color: var(--green); }
+  .cat-file .section-title { color: var(--green); }
+
+  .cat-display .section-icon { background: rgba(162,89,255,0.12); color: #a259ff; }
+  .cat-display .section-title { color: #a259ff); }
+
+  .cat-terminal .section-icon { background: rgba(243,156,56,0.12); color: #f39c38; }
+  .cat-terminal .section-title { color: #f39c38; }
+
+  .cat-debug .section-icon { background: rgba(255,80,80,0.12); color: #ff5050; }
+  .cat-debug .section-title { color: #ff5050; }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  .empty strong { color: var(--text); }
+
+  /* Footer */
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 17px; }
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 32px 0 24px; }
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .section { animation: fadeIn 0.2s ease both; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="header-left">
+      <div class="logo-row">
+        <svg class="vscode-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <mask id="m"><rect width="100" height="100" rx="18" fill="white"/></mask>
+          <rect width="100" height="100" rx="18" fill="#007ACC"/>
+          <path d="M70 15 L30 52 L15 42 L6 50 L15 58 L6 66 L15 74 L30 64 L70 85 L94 72 L94 28 Z" fill="white" mask="url(#m)"/>
+          <path d="M70 15 L94 28 L94 72 L70 85 L30 64 L15 74 L6 66 L26 50 L6 34 L15 26 L30 36 Z" fill="rgba(255,255,255,0.15)" mask="url(#m)"/>
+        </svg>
+        <h1>VS Code <span>Shortcuts</span></h1>
+      </div>
+      <p class="subtitle">// keyboard reference &nbsp;·&nbsp; <span id="total-count">—</span> shortcuts</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button id="theme-btn" onclick="toggleTheme()" title="Toggle theme" style="padding:8px 14px;font-family:var(--mono);font-size:12px;font-weight:500;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;flex-shrink:0;">
+        <svg id="theme-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span id="theme-label">Light</span>
+      </button>
+      <div class="os-toggle">
+        <button class="os-btn active" id="btn-win" onclick="setOS('win')">
+          <svg viewBox="0 0 16 16"><path d="M0 0h7.5v7.5H0zm8.5 0H16v7.5H8.5zM0 8.5h7.5V16H0zm8.5 0H16V16H8.5z"/></svg>
+          Windows
+        </button>
+        <button class="os-btn" id="btn-mac" onclick="setOS('mac')">
+          <svg viewBox="0 0 16 16"><path d="M11.182 3.236C11.81 2.473 12.227 1.418 12.1.4c-.9.063-1.99.6-2.636 1.363C8.836 2.5 8.336 3.582 8.49 4.563c.99.064 2-.49 2.69-1.327zM12.046 4.8c-1.491-.09-2.763.846-3.473.846-.71 0-1.8-.8-2.981-.78-1.527.018-2.945.89-3.727 2.255-1.6 2.764-.418 6.855 1.127 9.11.745 1.109 1.636 2.327 2.817 2.29 1.127-.036 1.563-.727 2.927-.727 1.363 0 1.763.727 2.945.71 1.218-.018 1.99-1.11 2.726-2.218.854-1.264 1.21-2.49 1.228-2.554-.027-.018-2.364-.909-2.382-3.6-.018-2.254 1.845-3.327 1.927-3.39-.454-1.472-1.927-2.037-2.582-2.073l-.55.031z"/></svg>
+          macOS
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" type="text" placeholder="Search shortcuts…" autocomplete="off" spellcheck="false">
+    </div>
+    <span class="shortcut-count" id="match-count"></span>
+  </div>
+
+  <div class="cat-pills" id="pills"></div>
+  <div class="sections" id="sections"></div>
+
+  <footer>
+    <p>VS Code default keybindings &nbsp;·&nbsp; Customize via <code>Ctrl+Shift+P</code> → Open Keyboard Shortcuts (JSON)</p>
+    <p>Generated with Claude &nbsp;·&nbsp; <a href="https://code.visualstudio.com/docs/getstarted/keybindings" target="_blank">Full docs ↗</a></p>
+  </footer>
+</div>
+
+<script>
+const DATA = [
+  { id: 'general', cat: 'General', cls: 'cat-general', icon: '<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>', items: [
+    { label: 'Command palette', win: 'Ctrl+Shift+P', mac: '⌘⇧P' },
+    { label: 'Quick open (file)', win: 'Ctrl+P', mac: '⌘P' },
+    { label: 'New window', win: 'Ctrl+Shift+N', mac: '⌘⇧N' },
+    { label: 'Close window', win: 'Ctrl+Shift+W', mac: '⌘⇧W' },
+    { label: 'Open user settings', win: 'Ctrl+,', mac: '⌘,' },
+    { label: 'Open keyboard shortcuts', win: 'Ctrl+K  Ctrl+S', mac: '⌘K  ⌘S' },
+    { label: 'Toggle full screen', win: 'F11', mac: 'Ctrl+⌘F' },
+  ]},
+  { id: 'editing', cat: 'Editing', cls: 'cat-editing', icon: '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>', items: [
+    { label: 'Cut line (no selection)', win: 'Ctrl+X', mac: '⌘X' },
+    { label: 'Copy line (no selection)', win: 'Ctrl+C', mac: '⌘C' },
+    { label: 'Move line up / down', win: 'Alt+↑ / ↓', mac: '⌥↑ / ↓' },
+    { label: 'Copy line up / down', win: 'Shift+Alt+↑ / ↓', mac: '⇧⌥↑ / ↓' },
+    { label: 'Delete line', win: 'Ctrl+Shift+K', mac: '⌘⇧K' },
+    { label: 'Insert line below', win: 'Ctrl+Enter', mac: '⌘Enter' },
+    { label: 'Insert line above', win: 'Ctrl+Shift+Enter', mac: '⌘⇧Enter' },
+    { label: 'Jump to matching bracket', win: 'Ctrl+Shift+\\', mac: '⌘⇧\\' },
+    { label: 'Indent / outdent line', win: 'Ctrl+] / Ctrl+[', mac: '⌘] / ⌘[' },
+    { label: 'Go to start of file', win: 'Ctrl+Home', mac: '⌘↑' },
+    { label: 'Go to end of file', win: 'Ctrl+End', mac: '⌘↓' },
+    { label: 'Toggle line comment', win: 'Ctrl+/', mac: '⌘/' },
+    { label: 'Toggle block comment', win: 'Shift+Alt+A', mac: '⇧⌥A' },
+    { label: 'Undo', win: 'Ctrl+Z', mac: '⌘Z' },
+    { label: 'Redo', win: 'Ctrl+Y', mac: '⌘Y' },
+    { label: 'Format document', win: 'Shift+Alt+F', mac: '⇧⌥F' },
+    { label: 'Format selection', win: 'Ctrl+K  Ctrl+F', mac: '⌘K  ⌘F' },
+    { label: 'Fold region', win: 'Ctrl+Shift+[', mac: '⌥⌘[' },
+    { label: 'Unfold region', win: 'Ctrl+Shift+]', mac: '⌥⌘]' },
+    { label: 'Fold all', win: 'Ctrl+K  Ctrl+0', mac: '⌘K  ⌘0' },
+    { label: 'Unfold all', win: 'Ctrl+K  Ctrl+J', mac: '⌘K  ⌘J' },
+    { label: 'Word wrap toggle', win: 'Alt+Z', mac: '⌥Z' },
+  ]},
+  { id: 'multi', cat: 'Multi-cursor & selection', cls: 'cat-multi', icon: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', items: [
+    { label: 'Add cursor above / below', win: 'Ctrl+Alt+↑ / ↓', mac: '⌥⌘↑ / ↓' },
+    { label: 'Add cursor at click', win: 'Alt+Click', mac: '⌥Click' },
+    { label: 'Select all occurrences of word', win: 'Ctrl+Shift+L', mac: '⌘⇧L' },
+    { label: 'Select next occurrence', win: 'Ctrl+D', mac: '⌘D' },
+    { label: 'Undo last cursor operation', win: 'Ctrl+U', mac: '⌘U' },
+    { label: 'Column (box) selection', win: 'Shift+Alt+drag', mac: '⇧⌥drag' },
+    { label: 'Expand selection', win: 'Shift+Alt+→', mac: '⌃⇧⌘→' },
+    { label: 'Shrink selection', win: 'Shift+Alt+←', mac: '⌃⇧⌘←' },
+  ]},
+  { id: 'nav', cat: 'Navigation', cls: 'cat-nav', icon: '<circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/>', items: [
+    { label: 'Go to line', win: 'Ctrl+G', mac: '⌃G' },
+    { label: 'Go to symbol in file', win: 'Ctrl+Shift+O', mac: '⌘⇧O' },
+    { label: 'Go to symbol in workspace', win: 'Ctrl+T', mac: '⌘T' },
+    { label: 'Go to definition', win: 'F12', mac: 'F12' },
+    { label: 'Peek definition', win: 'Alt+F12', mac: '⌥F12' },
+    { label: 'Go to references', win: 'Shift+F12', mac: '⇧F12' },
+    { label: 'Go back', win: 'Alt+←', mac: '⌃-' },
+    { label: 'Go forward', win: 'Alt+→', mac: '⌃⇧-' },
+    { label: 'Show all problems', win: 'Ctrl+Shift+M', mac: '⌘⇧M' },
+    { label: 'Next error / warning', win: 'F8', mac: 'F8' },
+    { label: 'Previous error / warning', win: 'Shift+F8', mac: '⇧F8' },
+  ]},
+  { id: 'search', cat: 'Search & replace', cls: 'cat-search', icon: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>', items: [
+    { label: 'Find', win: 'Ctrl+F', mac: '⌘F' },
+    { label: 'Replace', win: 'Ctrl+H', mac: '⌥⌘F' },
+    { label: 'Find in files', win: 'Ctrl+Shift+F', mac: '⌘⇧F' },
+    { label: 'Replace in files', win: 'Ctrl+Shift+H', mac: '⌘⇧H' },
+    { label: 'Toggle case-sensitive', win: 'Alt+C', mac: '⌥⌘C' },
+    { label: 'Toggle regex', win: 'Alt+R', mac: '⌥⌘R' },
+    { label: 'Toggle whole word', win: 'Alt+W', mac: '⌥⌘W' },
+    { label: 'Next / previous match', win: 'Enter / Shift+Enter', mac: 'Enter / ⇧Enter' },
+  ]},
+  { id: 'lang', cat: 'IntelliSense & languages', cls: 'cat-lang', icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>', items: [
+    { label: 'Trigger suggestion', win: 'Ctrl+Space', mac: '⌃Space' },
+    { label: 'Trigger parameter hints', win: 'Ctrl+Shift+Space', mac: '⌘⇧Space' },
+    { label: 'Show hover info', win: 'Ctrl+K  Ctrl+I', mac: '⌘K  ⌘I' },
+    { label: 'Rename symbol', win: 'F2', mac: 'F2' },
+    { label: 'Quick fix', win: 'Ctrl+.', mac: '⌘.' },
+    { label: 'Open definition to side', win: 'Ctrl+K  F12', mac: '⌘K  F12' },
+  ]},
+  { id: 'file', cat: 'File management', cls: 'cat-file', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>', items: [
+    { label: 'New file', win: 'Ctrl+N', mac: '⌘N' },
+    { label: 'Open file', win: 'Ctrl+O', mac: '⌘O' },
+    { label: 'Save', win: 'Ctrl+S', mac: '⌘S' },
+    { label: 'Save as', win: 'Ctrl+Shift+S', mac: '⌘⇧S' },
+    { label: 'Save all', win: 'Ctrl+K  S', mac: '⌘⌥S' },
+    { label: 'Close editor tab', win: 'Ctrl+W', mac: '⌘W' },
+    { label: 'Close all editors', win: 'Ctrl+K  Ctrl+W', mac: '⌘K  ⌘W' },
+    { label: 'Reopen closed editor', win: 'Ctrl+Shift+T', mac: '⌘⇧T' },
+    { label: 'Next editor tab', win: 'Ctrl+Tab', mac: '⌃Tab' },
+    { label: 'Copy file path', win: 'Ctrl+K  P', mac: '⌘K  P' },
+    { label: 'Reveal in Explorer', win: 'Ctrl+K  R', mac: '⌘K  R' },
+  ]},
+  { id: 'display', cat: 'Display & layout', cls: 'cat-display', icon: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>', items: [
+    { label: 'Zoom in', win: 'Ctrl+=', mac: '⌘=' },
+    { label: 'Zoom out', win: 'Ctrl+-', mac: '⌘-' },
+    { label: 'Reset zoom', win: 'Ctrl+Numpad0', mac: '⌘Numpad0' },
+    { label: 'Toggle sidebar', win: 'Ctrl+B', mac: '⌘B' },
+    { label: 'Toggle Explorer panel', win: 'Ctrl+Shift+E', mac: '⌘⇧E' },
+    { label: 'Toggle Source Control', win: 'Ctrl+Shift+G', mac: '⌃⇧G' },
+    { label: 'Toggle Run & Debug', win: 'Ctrl+Shift+D', mac: '⌘⇧D' },
+    { label: 'Toggle Extensions', win: 'Ctrl+Shift+X', mac: '⌘⇧X' },
+    { label: 'Toggle Output panel', win: 'Ctrl+Shift+U', mac: '⌘⇧U' },
+    { label: 'Toggle Markdown preview', win: 'Ctrl+Shift+V', mac: '⌘⇧V' },
+    { label: 'Split editor', win: 'Ctrl+\\', mac: '⌘\\' },
+    { label: 'Focus editor group 1/2/3', win: 'Ctrl+1 / 2 / 3', mac: '⌘1 / 2 / 3' },
+  ]},
+  { id: 'terminal', cat: 'Terminal', cls: 'cat-terminal', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>', items: [
+    { label: 'Toggle integrated terminal', win: 'Ctrl+`', mac: '⌃`' },
+    { label: 'New terminal', win: 'Ctrl+Shift+`', mac: '⌃⇧`' },
+    { label: 'Kill terminal', win: 'Ctrl+Shift+Delete', mac: '⌘⌫' },
+    { label: 'Clear terminal', win: 'Ctrl+K (in terminal)', mac: '⌘K (in terminal)' },
+    { label: 'Scroll terminal up', win: 'Ctrl+↑', mac: '⌘↑' },
+    { label: 'Scroll terminal down', win: 'Ctrl+↓', mac: '⌘↓' },
+    { label: 'Focus next terminal', win: 'Alt+→', mac: '⌥→' },
+    { label: 'Focus previous terminal', win: 'Alt+←', mac: '⌥←' },
+  ]},
+  { id: 'debug', cat: 'Debug', cls: 'cat-debug', icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', items: [
+    { label: 'Toggle breakpoint', win: 'F9', mac: 'F9' },
+    { label: 'Start / continue', win: 'F5', mac: 'F5' },
+    { label: 'Start without debugging', win: 'Ctrl+F5', mac: '⌃F5' },
+    { label: 'Stop', win: 'Shift+F5', mac: '⇧F5' },
+    { label: 'Restart', win: 'Ctrl+Shift+F5', mac: '⌘⇧F5' },
+    { label: 'Step over', win: 'F10', mac: 'F10' },
+    { label: 'Step into', win: 'F11', mac: 'F11' },
+    { label: 'Step out', win: 'Shift+F11', mac: '⇧F11' },
+    { label: 'Show hover (debug)', win: 'Ctrl+K  Ctrl+I', mac: '⌘K  ⌘I' },
+  ]},
+];
+
+let os = 'win';
+let activeCat = 'all';
+let query = '';
+let isLight = true;
+document.getElementById('theme-icon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+document.getElementById('theme-label').textContent = 'Dark';
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.documentElement.classList.toggle('light', isLight);
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (isLight) {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    label.textContent = 'Dark';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    label.textContent = 'Light';
+  }
+}
+
+const total = DATA.reduce((s, d) => s + d.items.length, 0);
+document.getElementById('total-count').textContent = total;
+
+function setOS(o) {
+  os = o;
+  document.getElementById('btn-win').classList.toggle('active', o === 'win');
+  document.getElementById('btn-mac').classList.toggle('active', o === 'mac');
+  render();
+}
+
+function renderPills() {
+  const pills = [{ id: 'all', label: 'All' }, ...DATA.map(d => ({ id: d.id, label: d.cat }))];
+  document.getElementById('pills').innerHTML = pills.map(p =>
+    `<button class="pill${p.id === activeCat ? ' active' : ''}" onclick="selectCat('${p.id}')">${p.label}</button>`
+  ).join('');
+}
+
+function selectCat(id) {
+  activeCat = id;
+  renderPills();
+  render();
+}
+
+function makeKeys(str) {
+  return str.split(/\s{2,}/).map((chunk, i, arr) => {
+    const kbds = chunk.split(/(?<=[^\s])\s(?=[^\s])/).map(k => `<kbd>${k}</kbd>`).join('');
+    return i < arr.length - 1 ? kbds + '<span class="sep"> then </span>' : kbds;
+  }).join('');
+}
+
+function render() {
+  const q = query.toLowerCase();
+  const sections = document.getElementById('sections');
+  let html = '';
+  let matchCount = 0;
+
+  for (const sec of DATA) {
+    if (activeCat !== 'all' && activeCat !== sec.id) continue;
+    const items = sec.items.filter(it =>
+      !q || it.label.toLowerCase().includes(q) || (it[os] || '').toLowerCase().includes(q)
+    );
+    if (!items.length) continue;
+    matchCount += items.length;
+
+    html += `<div class="section ${sec.cls}">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">${sec.icon}</svg></div>
+        <span class="section-title">${sec.cat}</span>
+        <span class="section-line"></span>
+        <span class="section-count">${items.length}</span>
+      </div>
+      <div class="grid">`;
+
+    for (const it of items) {
+      const key = it[os] || '—';
+      html += `<div class="shortcut-row">
+        <span class="shortcut-label">${it.label}</span>
+        <span class="keys">${makeKeys(key)}</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  if (!html) {
+    html = `<div class="empty">No shortcuts matching <strong>"${query}"</strong></div>`;
+  }
+
+  sections.innerHTML = html;
+  const mc = document.getElementById('match-count');
+  mc.innerHTML = q || activeCat !== 'all'
+    ? `<strong>${matchCount}</strong> of ${total} shortcuts`
+    : '';
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value;
+  render();
+});
+
+renderPills();
+render();
+</script>
+</body>
+</html>
